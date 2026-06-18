@@ -58,6 +58,21 @@
             ,
             "preLaunchTask": "CMake: build",
             "internalConsoleOptions": "neverOpen",
-        }
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            // "name": "Launch",
+            "name": "CMake: (lldb) Launch",
+            // "program": "${workspaceFolder}/<program>",
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [],
+            // "cwd": "${workspaceFolder}"
+            "cwd": "${command:cmake.launchTargetDirectory}"
+            // 
+            ,
+            "preLaunchTask": "CMake: build",
+            "internalConsoleOptions": "neverOpen",
+        },
     ]
 }
