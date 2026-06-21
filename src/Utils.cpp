@@ -23,10 +23,10 @@ bool bit_test(const uint64_t *bits, int id)
 
 void print_locked(const std::string &s)
 {
-    sem_wait(&g_shm->print_sem);
+    sem_wait_compat(g_shm->print_sem);
     std::cout << s << std::endl;
     std::cout.flush();
-    sem_post(&g_shm->print_sem);
+    sem_post_compat(g_shm->print_sem);
 }
 
 bool DateUtil::is_leap(int y)

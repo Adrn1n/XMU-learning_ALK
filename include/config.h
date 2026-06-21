@@ -3,6 +3,33 @@
 
 #include <stdint.h>
 #include <semaphore.h>
+#include <fcntl.h> // 用于 macOS 下 sem_open 的 O_CREAT 和 O_EXCL
+
+// macOS 与 Linux 信号量兼容定义
+#ifdef __APPLE__
+typedef sem_t *shm_sem_t;
+#else
+typedef sem_t shm_sem_t;
+#endif
+
+// 兼容的 wait 和 post 函数
+inline int sem_wait_compat(shm_sem_t &sem)
+{
+#ifdef __APPLE__
+    return sem_wait(sem);
+#else
+    return sem_wait(&sem);
+#endif
+}
+
+inline int sem_post_compat(shm_sem_t &sem)
+{
+#ifdef __APPLE__
+    return sem_post(sem);
+#else
+    return sem_post(&sem);
+#endif
+}
 
 static const int MAX_DEVICES = 128;
 static const int MAX_USERS = 255;
@@ -36,9 +63,10 @@ struct ReservationEntry
 
 struct SharedData
 {
-    sem_t resource_sem;
-    sem_t read_mutex_sem;
-    sem_t print_sem;
+    // 使用兼容的信号量类型
+    shm_sem_t resource_sem;
+    shm_sem_t read_mutex_sem;
+    shm_sem_t print_sem;
 
     int read_count;
 
